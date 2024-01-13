@@ -2,6 +2,11 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 
+"""
+# Add 1st Level Part-Component Relations to BOM
+Please enter the information of the part-component relation you want to add to your BOM.
+"""
+
 part_name = st.text_input('Enter Part name', key='part_name')
 component_name = st.text_input('Enter 1st level component name', key='component_name')
 multiplier = st.text_input('Enter multiplier', key='multiplier')
@@ -15,7 +20,11 @@ if st.button('Add'):
         part_id = cursor.fetchone()[0]
         cursor.execute('SELECT PartID FROM Part WHERE PartName = (?)', (component_name,))
         component_id = cursor.fetchone()[0]
-        cursor.execute('INSERT INTO BOM (PartID, ComponentID, Multiplier, Level) VALUES (?, ?, ?, 1)', (part_id, component_id, multiplier))
+        cursor.execute('SELECT PartID FROM BOM WHERE PartID = ? AND ComponentID = ?', (part_id, component_id))
+        if cursor.fetchone():
+            st.error(f"Part {part_name} already has component {component_name} in its BOM.")
+        else:
+            cursor.execute('INSERT INTO BOM (PartID, ComponentID, Multiplier, Level) VALUES (?, ?, ?, 1)', (part_id, component_id, multiplier))
         conn.commit()
         conn.close()
     except ValueError as e:

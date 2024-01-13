@@ -20,7 +20,7 @@ if st.button('Add'):
         c = conn.cursor()
         c.execute('SELECT PartName FROM Part WHERE PartName = ?', (part_name,))
         if c.fetchone():
-            raise ValueError(f"Part name {part_name} already exists.")
+            st.error(f"Part {part_name} already exists.")
         else:
             if lot_size:
                 c.execute('INSERT INTO Part (PartName, LeadTime, LotSize) VALUES (?, ?, ?)', (part_name, lead_time, lot_size))
