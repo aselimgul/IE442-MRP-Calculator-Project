@@ -11,6 +11,9 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS MRP (PartID INTEGER, PeriodID INTEGER, GrossRequirements INTEGER, ScheduledReceipts INTEGER, EndingInventory INTEGER, NetRequirements INTEGER, PlannedOrderRelease INTEGER, PlannedOrderReceipt INTEGER, PRIMARY KEY (PeriodID, PartID))')
     conn.commit()
     conn.close()
+
+create_table()
+
 """
 # WELCOME TO MRP CALCULATOR
 This is a simple MRP calculator developed for IE442 course project at Bogazici University.
