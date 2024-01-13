@@ -2,6 +2,12 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 
+"""
+# Add New Part
+Please enter the information of the part you want to add to your inventory.
+Note that the part name must be unique.
+"""
+
 part_name = st.text_input('Enter Part name', key='part_name')
 lead_time = st.text_input('Enter Lead Time', key='lead_time')
 lot_size = st.text_input('Enter Lot Size', key='lot_size')
@@ -12,10 +18,14 @@ if st.button('Add'):
         lot_size = int(lot_size) if lot_size else None
         conn = sqlite3.connect('data.db')
         c = conn.cursor()
-        if lot_size:
-            c.execute('INSERT INTO Part (PartName, LeadTime, LotSize) VALUES (?, ?, ?)', (part_name, lead_time, lot_size))
+        c.execute('SELECT PartName FROM Part WHERE PartName = ?', (part_name,))
+        if c.fetchone():
+            raise ValueError(f"Part name {part_name} already exists.")
         else:
-            c.execute('INSERT INTO Part (PartName, LeadTime) VALUES (?, ?)', (part_name, lead_time))
+            if lot_size:
+                c.execute('INSERT INTO Part (PartName, LeadTime, LotSize) VALUES (?, ?, ?)', (part_name, lead_time, lot_size))
+            else:
+                c.execute('INSERT INTO Part (PartName, LeadTime) VALUES (?, ?)', (part_name, lead_time))
         conn.commit()
         conn.close()
     except ValueError as e:
