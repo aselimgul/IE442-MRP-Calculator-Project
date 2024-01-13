@@ -210,7 +210,7 @@ def calculate_first_period_inventory():
     for element in parts:
         cursor.execute("""
             UPDATE MRP
-            SET EndingInventory = (SELECT InitialInventory FROM Part WHERE PartID = ?) - NetRequirements
+            SET EndingInventory = (SELECT InitialInventory FROM Part WHERE PartID = ?) + ScheduledReceipts - NetRequirements
             WHERE MRP.PeriodID = 1 AND MRP.PartID = ?;
             """, (element, element))
     connection.commit()
